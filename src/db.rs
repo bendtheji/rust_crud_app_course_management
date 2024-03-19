@@ -91,13 +91,13 @@ pub fn establish_connection() -> PgConnection {
 mod tests {
     use diesel::{Connection, result::Error};
 
-    use crate::db::{create_student, establish_connection, get_student};
+    use crate::db;
 
     #[test]
     fn test_create_student() {
-        let mut conn = establish_connection();
+        let mut conn = db::establish_connection();
         conn.test_transaction::<_, Error, _>(|conn| {
-            let student = create_student(conn, "test_user@gmail.com")?;
+            let student = db::create_student(conn, "test_user@gmail.com")?;
             assert_eq!("test_user@gmail.com", student.email);
             Ok(())
         });
@@ -105,10 +105,10 @@ mod tests {
 
     #[test]
     fn test_get_student() {
-        let mut conn = establish_connection();
+        let mut conn = db::establish_connection();
         conn.test_transaction::<_, Error, _>(|conn| {
-            create_student(conn, "test_user@gmail.com")?;
-            let student = get_student(conn, "test_user@gmail.com")?;
+            db::create_student(conn, "test_user@gmail.com")?;
+            let student = db::get_student(conn, "test_user@gmail.com")?;
             assert_eq!("test_user@gmail.com", student.email);
             Ok(())
         });
@@ -117,10 +117,10 @@ mod tests {
     #[test]
     #[should_panic]
     fn test_get_student_not_found() {
-        let mut conn = establish_connection();
+        let mut conn = db::establish_connection();
         conn.test_transaction::<_, Error, _>(|conn| {
-            create_student(conn, "test_user@gmail.com")?;
-            let student = get_student(conn, "test_user_two@gmail.com")?;
+            db::create_student(conn, "test_user@gmail.com")?;
+            let student = db::get_student(conn, "test_user_two@gmail.com")?;
             Ok(())
         });
     }
@@ -128,10 +128,53 @@ mod tests {
     #[test]
     #[should_panic]
     fn test_create_student_not_unique_email() {
-        let mut conn = establish_connection();
+        let mut conn = db::establish_connection();
         conn.test_transaction::<_, Error, _>(|conn| {
-            create_student(conn, "test_user@gmail.com")?;
-            create_student(conn, "test_user@gmail.com")?;
+            db::create_student(conn, "test_user@gmail.com")?;
+            db::create_student(conn, "test_user@gmail.com")?;
+            Ok(())
+        });
+    }
+
+    #[test]
+    fn test_create_course() {
+        let mut conn = db::establish_connection();
+        conn.test_transaction::<_, Error, _>(|conn| {
+            let course = db::create_course(conn, "mathematics")?;
+            assert_eq!("mathematics", course.name);
+            Ok(())
+        });
+    }
+
+    #[test]
+    fn test_get_course() {
+        let mut conn = db::establish_connection();
+        conn.test_transaction::<_, Error, _>(|conn| {
+            db::create_course(conn, "mathematics")?;
+            let course = db::get_course(conn, "mathematics")?;
+            assert_eq!("mathematics", course.name);
+            Ok(())
+        });
+    }
+
+    #[test]
+    #[should_panic]
+    fn test_get_course_not_found() {
+        let mut conn = db::establish_connection();
+        conn.test_transaction::<_, Error, _>(|conn| {
+            db::create_student(conn, "mathematics")?;
+            let student = db::get_student(conn, "physics")?;
+            Ok(())
+        });
+    }
+
+    #[test]
+    #[should_panic]
+    fn test_create_course_not_unique_name() {
+        let mut conn = db::establish_connection();
+        conn.test_transaction::<_, Error, _>(|conn| {
+            db::create_student(conn, "mathematics")?;
+            db::create_student(conn, "mathematics")?;
             Ok(())
         });
     }
