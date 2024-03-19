@@ -1,32 +1,34 @@
+use std::error::Error;
+use std::fmt::{Debug, Display};
+
 use actix_web::{error, HttpResponse};
 use actix_web::body::BoxBody;
 use actix_web::http::header::ContentType;
 use actix_web::http::StatusCode;
-use derive_more::Display;
-use diesel::result::DatabaseErrorKind;
+use thiserror::Error;
 
-#[derive(Debug, Display)]
+#[derive(Error)]
 pub enum ApiError {
-    #[display(fmt = "Internal Error")]
+    #[error("Internal Server Error occurred")]
     InternalError,
 
-    #[display(fmt = "Bad Request")]
+    #[error("Bad Request")]
     BadClientData,
 
-    #[display(fmt = "Resource not found")]
-    NotFound,
+    #[error("DB Error: {0}")]
+    DBError(#[from] diesel::result::Error),
 
-    #[display(fmt = "Unique constraint violated")]
-    UniqueViolation,
 }
 
 impl error::ResponseError for ApiError {
     fn status_code(&self) -> StatusCode {
+        use diesel::result::*;
         match *self {
             ApiError::InternalError => StatusCode::INTERNAL_SERVER_ERROR,
             ApiError::BadClientData => StatusCode::BAD_REQUEST,
-            ApiError::NotFound => StatusCode::NOT_FOUND,
-            ApiError::UniqueViolation => StatusCode::CONFLICT,
+            ApiError::DBError(Error::NotFound) => StatusCode::NOT_FOUND,
+            ApiError::DBError(Error::DatabaseError(DatabaseErrorKind::UniqueViolation, _)) => StatusCode::CONFLICT,
+            ApiError::DBError(_) => StatusCode::INTERNAL_SERVER_ERROR,
         }
     }
 
@@ -37,13 +39,12 @@ impl error::ResponseError for ApiError {
     }
 }
 
-impl From<diesel::result::Error> for ApiError {
-    fn from(value: diesel::result::Error) -> Self {
-        use diesel::result::{DatabaseErrorKind, Error};
-        match value {
-            Error::NotFound => ApiError::NotFound,
-            Error::DatabaseError(DatabaseErrorKind::UniqueViolation, _) => ApiError::UniqueViolation,
-            _ => ApiError::InternalError
+impl Debug for ApiError {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        writeln!(f, "{}", self)?;
+        if let Some(source) = self.source() {
+            writeln!(f, "Caused by:\n\t{}", source)?;
         }
+        Ok(())
     }
 }
