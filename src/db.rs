@@ -78,3 +78,61 @@ pub fn delete_student_course(conn: &mut PgConnection, student_email: &str, cours
 
     diesel::delete(students_courses::table.filter(predicate)).execute(conn)
 }
+
+pub fn establish_connection() -> PgConnection {
+    dotenv().ok();
+
+    let database_url = env::var("DATABASE_URL").expect("DATABASE_URL must be set");
+    PgConnection::establish(&database_url)
+        .unwrap_or_else(|_| panic!("Error connecting to {}", database_url))
+}
+
+#[cfg(test)]
+mod tests {
+    use diesel::{Connection, result::Error};
+
+    use crate::db::{create_student, establish_connection, get_student};
+
+    #[test]
+    fn test_create_student() {
+        let mut conn = establish_connection();
+        conn.test_transaction::<_, Error, _>(|conn| {
+            let student = create_student(conn, "test_user@gmail.com")?;
+            assert_eq!("test_user@gmail.com", student.email);
+            Ok(())
+        });
+    }
+
+    #[test]
+    fn test_get_student() {
+        let mut conn = establish_connection();
+        conn.test_transaction::<_, Error, _>(|conn| {
+            create_student(conn, "test_user@gmail.com")?;
+            let student = get_student(conn, "test_user@gmail.com")?;
+            assert_eq!("test_user@gmail.com", student.email);
+            Ok(())
+        });
+    }
+
+    #[test]
+    #[should_panic]
+    fn test_get_student_not_found() {
+        let mut conn = establish_connection();
+        conn.test_transaction::<_, Error, _>(|conn| {
+            create_student(conn, "test_user@gmail.com")?;
+            let student = get_student(conn, "test_user_two@gmail.com")?;
+            Ok(())
+        });
+    }
+
+    #[test]
+    #[should_panic]
+    fn test_create_student_not_unique_email() {
+        let mut conn = establish_connection();
+        conn.test_transaction::<_, Error, _>(|conn| {
+            create_student(conn, "test_user@gmail.com")?;
+            create_student(conn, "test_user@gmail.com")?;
+            Ok(())
+        });
+    }
+}

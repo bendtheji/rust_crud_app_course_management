@@ -1,5 +1,6 @@
 -- Your SQL goes here
 CREATE TABLE courses (
     id SERIAL PRIMARY KEY,
-    name VARCHAR NOT NULL
+    name VARCHAR NOT NULL,
+    UNIQUE(name)
 );
