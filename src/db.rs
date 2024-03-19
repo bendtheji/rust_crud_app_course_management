@@ -12,7 +12,6 @@ pub type DbPool = r2d2::Pool<r2d2::ConnectionManager<PgConnection>>;
 pub fn initialize_db_pool() -> DbPool {
     dotenv().ok();
     let conn_spec = env::var("DATABASE_URL").expect("DATABASE_URL should be set");
-    println!("conn_spec: {:?}", conn_spec);
     let manager = r2d2::ConnectionManager::<PgConnection>::new(conn_spec);
     r2d2::Pool::builder()
         .build(manager)

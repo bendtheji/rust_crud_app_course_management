@@ -8,34 +8,22 @@ services:
       POSTGRES_USER: postgres_user
       POSTGRES_PASSWORD: postgres_pw
       POSTGRES_DB: course_management_minden_ai
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U postgres_user"]
-      interval: 5s
-      timeout: 5s
-      retries: 10
     ports:
       - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
-    networks:
-      course_management_net:
   your_app:
     build:
       context: .
       dockerfile: Dockerfile
     depends_on:
-      postgres:
-        condition: service_healthy
+      - postgres
     environment:
       DATABASE_URL: postgres://postgres_user:postgres_pw@postgres/course_management_minden_ai
-    networks:
-      - course_management_net
+      APP_ENV: DOCKER
     ports:
       - "8080:8080"
 
 volumes:
   postgres_data:
-networks:
-  course_management_net:
-    driver: bridge
 
