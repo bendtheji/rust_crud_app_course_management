@@ -2,7 +2,7 @@ use actix_web::body::BoxBody;
 use actix_web::{HttpRequest, HttpResponse, Responder};
 use actix_web::http::header::ContentType;
 use serde::{Deserialize, Serialize};
-use crate::models::Student;
+use crate::db::students::models::Student;
 
 #[derive(Deserialize)]
 pub struct GetStudentRequest {

@@ -14,8 +14,6 @@ use crate::db::initialize_db_pool;
 pub const MIGRATIONS: EmbeddedMigrations = embed_migrations!();
 
 pub mod db;
-mod models;
-mod schema;
 mod api;
 
 struct AppState {
