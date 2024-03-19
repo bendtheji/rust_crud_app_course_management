@@ -2,10 +2,10 @@ use diesel::prelude::*;
 
 use crate::db::courses::db_functions as courses_db_functions;
 use crate::db::courses::models::Course;
-use crate::schema::*;
 use crate::db::students::db_functions as students_db_functions;
 use crate::db::students::models::Student;
 use crate::db::students_courses::models::StudentCourse;
+use crate::schema::*;
 
 pub fn get_courses_attended_by_student(conn: &mut PgConnection, email: &str) -> QueryResult<Vec<Course>> {
     let student = students_db_functions::get_student(conn, email)?;
@@ -116,5 +116,41 @@ mod tests {
 
             Ok(())
         });
+    }
+
+    #[test]
+    fn test_create_student_course() {
+        let mut conn = db::establish_connection();
+        conn.test_transaction::<_, Error, _>(|conn| {
+            let student = students_db_functions::create_student(conn, "some_user@gmail.com")?;
+            let course = courses_db_functions::create_course(conn, "machine learning")?;
+            create_student_course(conn, student.id, course.id)?;
+            Ok(())
+        })
+    }
+
+    #[test]
+    #[should_panic]
+    fn test_create_student_course_duplicate() {
+        let mut conn = db::establish_connection();
+        conn.test_transaction::<_, Error, _>(|conn| {
+            let student = students_db_functions::create_student(conn, "some_user@gmail.com")?;
+            let course = courses_db_functions::create_course(conn, "machine learning")?;
+            create_student_course(conn, student.id, course.id)?;
+            create_student_course(conn, student.id, course.id)?;
+            Ok(())
+        })
+    }
+
+    #[test]
+    fn test_delete_student_course() {
+        let mut conn = db::establish_connection();
+        conn.test_transaction::<_, Error, _>(|conn| {
+            let student = students_db_functions::create_student(conn, "some_user@gmail.com")?;
+            let course = courses_db_functions::create_course(conn, "machine learning")?;
+            create_student_course(conn, student.id, course.id)?;
+            delete_student_course(conn, student.id, course.id)?;
+            Ok(())
+        })
     }
 }
