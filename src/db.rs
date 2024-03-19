@@ -174,4 +174,74 @@ mod tests {
             Ok(())
         });
     }
+
+    #[test]
+    fn test_get_courses_attended_by_students() {
+        let mut conn = db::establish_connection();
+        conn.test_transaction::<_, Error, _>(|conn| {
+            let student = db::create_student(conn, "some_user@gmail.com")?;
+            let course_one = db::create_course(conn, "data science")?;
+            let course_two = db::create_course(conn, "machine learning")?;
+            db::create_student_course(conn, student.id, course_one.id)?;
+            db::create_student_course(conn, student.id, course_two.id)?;
+
+            let courses_attended = db::get_courses_attended_by_student(conn, "some_user@gmail.com")?;
+            assert_eq!(vec!["data science", "machine learning"], courses_attended.into_iter().map(|item| item.name).collect::<Vec<String>>());
+
+            Ok(())
+        });
+    }
+
+    #[test]
+    #[should_panic]
+    fn test_get_courses_attended_by_students_student_not_found() {
+        let mut conn = db::establish_connection();
+        conn.test_transaction::<_, Error, _>(|conn| {
+            let student = db::create_student(conn, "some_user@gmail.com")?;
+            let course_one = db::create_course(conn, "data science")?;
+            let course_two = db::create_course(conn, "machine learning")?;
+            db::create_student_course(conn, student.id, course_one.id)?;
+            db::create_student_course(conn, student.id, course_two.id)?;
+
+            let courses_attended = db::get_courses_attended_by_student(conn, "some_unknown_user@gmail.com")?;
+            assert_eq!(vec!["data science", "machine learning"], courses_attended.into_iter().map(|item| item.name).collect::<Vec<String>>());
+
+            Ok(())
+        });
+    }
+
+    #[test]
+    fn test_get_students_in_course() {
+        let mut conn = db::establish_connection();
+        conn.test_transaction::<_, Error, _>(|conn| {
+            let student_one = db::create_student(conn, "some_user@gmail.com")?;
+            let student_two = db::create_student(conn, "some_user_two@gmail.com")?;
+            let course = db::create_course(conn, "machine learning")?;
+            db::create_student_course(conn, student_one.id, course.id)?;
+            db::create_student_course(conn, student_two.id, course.id)?;
+
+            let students_in_course = db::get_students_in_course(conn, "machine learning")?;
+            assert_eq!(vec!["some_user@gmail.com", "some_user_two@gmail.com"], students_in_course.into_iter().map(|item| item.email).collect::<Vec<String>>());
+
+            Ok(())
+        });
+    }
+
+    #[test]
+    #[should_panic]
+    fn test_get_students_in_course_course_not_found() {
+        let mut conn = db::establish_connection();
+        conn.test_transaction::<_, Error, _>(|conn| {
+            let student_one = db::create_student(conn, "some_user@gmail.com")?;
+            let student_two = db::create_student(conn, "some_user_two@gmail.com")?;
+            let course = db::create_course(conn, "machine learning")?;
+            db::create_student_course(conn, student_one.id, course.id)?;
+            db::create_student_course(conn, student_two.id, course.id)?;
+
+            let students_in_course = db::get_students_in_course(conn, "culinary")?;
+            assert_eq!(vec!["some_user@gmail.com", "some_user_two@gmail.com"], students_in_course.into_iter().map(|item| item.email).collect::<Vec<String>>());
+
+            Ok(())
+        });
+    }
 }
