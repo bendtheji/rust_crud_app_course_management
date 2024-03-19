@@ -43,3 +43,102 @@ Then you may need to run this command to create the DB and its tables in your Po
 diesel setup
 ```
 
+Once the DB and its tables are setup, then run this command:
+```
+cargo run
+```
+
+## APIs
+
+Import the "Course Management Minden AI.postman_collection.json" file into Postman to get the list of available endpoints.
+
+
+### Students
+
+`GET /students`
+
+Query Params:
+ - `email`
+
+Response Body:
+```
+{
+    "id": 1,
+    "email": "taylor.swift@gmail.com"
+}
+```
+
+Example:
+```
+curl GET 'http://127.0.0.1:8080/students?email=taylor.swift@gmail.com'
+```
+
+
+`POST /students`
+
+Request Body:
+```
+{
+    "email": "taylor.swift@gmail.com"
+}
+```
+Response Body:
+```
+{
+    "id": 1,
+    "email": "taylor.swift@gmail.com"
+}
+```
+
+Example:
+```
+curl POST -H 'Content-Type: application/json' -d '{"email": "taylor.swift@gmail.com"}' http://127.0.0.1:8080/students
+```
+
+### Courses
+
+`GET /courses`
+
+Query Params:
+- `name`
+
+Response Body:
+```
+{
+    "id": 1,
+    "name": "mathematics"
+}
+```
+
+Example:
+```
+curl GET 'http://127.0.0.1:8080/courses?name=mathematics'
+```
+
+
+`POST /courses`
+
+Request Body:
+```
+{
+    "name": "mathematics"
+}
+```
+Response Body:
+```
+{
+    "id": 1,
+    "name": "mathematics"
+}
+```
+
+Example:
+```
+curl POST -H 'Content-Type: application/json' -d '{"name": "mathematics"}' http://127.0.0.1:8080/courses
+```
+
+
+
+
+
+

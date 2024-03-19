@@ -1,0 +1,260 @@
+{
+	"info": {
+		"_postman_id": "3ff16e13-6052-4057-8efe-f4b4c680dc63",
+		"name": "Course Management Minden AI",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "12089589"
+	},
+	"item": [
+		{
+			"name": "Fetch Student by Email",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://127.0.0.1:8080/students?email=taylor.swift@gmail.com",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8080",
+					"path": [
+						"students"
+					],
+					"query": [
+						{
+							"key": "email",
+							"value": "taylor.swift@gmail.com"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create New Student",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"email\": \"taylor.swift@gmail.com\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://127.0.0.1:8080/students",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8080",
+					"path": [
+						"students"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Course By Name",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://127.0.0.1:8080/courses?name=mathematics",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8080",
+					"path": [
+						"courses"
+					],
+					"query": [
+						{
+							"key": "name",
+							"value": "mathematics"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create New Course",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"name\": \"mathematics\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://127.0.0.1:8080/courses",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8080",
+					"path": [
+						"courses"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Sign up Student for Course",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"student_email\": \"taylor.swift@gmail.com\",\n    \"course_name\": \"geometry\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://127.0.0.1:8080/students-courses",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8080",
+					"path": [
+						"students-courses"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get courses for student",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://127.0.0.1:8080/students-courses/student?student_email=taylor.swift@gmail.com",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8080",
+					"path": [
+						"students-courses",
+						"student"
+					],
+					"query": [
+						{
+							"key": "student_email",
+							"value": "taylor.swift@gmail.com"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Cancel Sign Up",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"student_email\": \"taylor.swift@gmail.com\",\n    \"course_name\": \"geometry\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://127.0.0.1:8080/students-courses",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8080",
+					"path": [
+						"students-courses"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Students in course",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://127.0.0.1:8080/students-courses/course?course_name=mathematics",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8080",
+					"path": [
+						"students-courses",
+						"course"
+					],
+					"query": [
+						{
+							"key": "course_name",
+							"value": "mathematics"
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
