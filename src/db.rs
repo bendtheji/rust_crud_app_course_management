@@ -15,7 +15,7 @@ pub fn initialize_db_pool() -> DbPool {
     let manager = r2d2::ConnectionManager::<PgConnection>::new(conn_spec);
     r2d2::Pool::builder()
         .build(manager)
-        .expect("database URL should be valid path to SQLite DB file")
+        .expect("database URL should be valid path to Postgres instance")
 }
 
 pub fn create_student(conn: &mut PgConnection, email: &str) -> QueryResult<Student> {
