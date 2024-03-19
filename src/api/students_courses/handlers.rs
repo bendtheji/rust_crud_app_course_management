@@ -32,7 +32,9 @@ async fn get_courses_for_student(data: web::Data<db::DbPool>, params: web::Query
 #[delete("")]
 async fn delete_student_course(data: web::Data<db::DbPool>, req: web::Json<DeleteStudentCourseRequest>) -> Result<impl Responder, ApiError> {
     let mut connection = data.get().unwrap();
-    db::delete_student_course(&mut connection, &req.student_email, &req.course_name)?;
+    let student = db::get_student(&mut connection, &req.student_email)?;
+    let course = db::get_course(&mut connection, &req.course_name)?;
+    db::delete_student_course(&mut connection, student.id, course.id)?;
     Ok(HttpResponse::Ok().body("sign-up deleted successfully"))
 }
 

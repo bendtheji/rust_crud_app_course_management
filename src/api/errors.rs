@@ -6,13 +6,13 @@ use derive_more::Display;
 
 #[derive(Debug, Display)]
 pub enum ApiError {
-    #[display(fmt = "internal error")]
+    #[display(fmt = "Internal Error")]
     InternalError,
 
-    #[display(fmt = "bad request")]
+    #[display(fmt = "Bad Request")]
     BadClientData,
 
-    #[display(fmt = "not found")]
+    #[display(fmt = "Resource not found")]
     NotFound,
 }
 

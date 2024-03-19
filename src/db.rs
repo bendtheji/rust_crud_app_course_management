@@ -32,16 +32,6 @@ pub fn create_course(conn: &mut PgConnection, name: &str) -> QueryResult<Course>
         .get_result(conn)
 }
 
-pub fn create_student_course(conn: &mut PgConnection, student_id: i32, course_id: i32) -> QueryResult<StudentCourse> {
-    diesel::insert_into(students_courses::table)
-        .values((
-            students_courses::student_id.eq(student_id),
-            students_courses::course_id.eq(course_id)
-        ))
-        .returning(StudentCourse::as_returning())
-        .get_result(conn)
-}
-
 pub fn get_student(conn: &mut PgConnection, email: &str) -> QueryResult<Student> {
     students::table.filter(students::email.eq(email))
         .select(Student::as_select())
@@ -70,12 +60,18 @@ pub fn get_students_in_course(conn: &mut PgConnection, name: &str) -> QueryResul
         .load(conn)
 }
 
-pub fn delete_student_course(conn: &mut PgConnection, student_email: &str, course_name: &str) -> QueryResult<usize> {
-    let student = get_student(conn, student_email)?;
-    let course = get_course(conn, course_name)?;
+pub fn create_student_course(conn: &mut PgConnection, student_id: i32, course_id: i32) -> QueryResult<StudentCourse> {
+    diesel::insert_into(students_courses::table)
+        .values((
+            students_courses::student_id.eq(student_id),
+            students_courses::course_id.eq(course_id)
+        ))
+        .returning(StudentCourse::as_returning())
+        .get_result(conn)
+}
 
-    let predicate = students_courses::student_id.eq(student.id).and(students_courses::course_id.eq(course.id));
-
+pub fn delete_student_course(conn: &mut PgConnection, student_id: i32, course_id: i32) -> QueryResult<usize> {
+    let predicate = students_courses::student_id.eq(student_id).and(students_courses::course_id.eq(course_id));
     diesel::delete(students_courses::table.filter(predicate)).execute(conn)
 }
 
