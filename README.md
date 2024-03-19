@@ -62,10 +62,7 @@ Query Params:
 
 Response Body:
 ```
-{
-    "id": 1,
-    "email": "taylor.swift@gmail.com"
-}
+{ "id": 1, "email": "taylor.swift@gmail.com"}
 ```
 
 Example:
@@ -78,16 +75,11 @@ curl GET 'http://127.0.0.1:8080/students?email=taylor.swift@gmail.com'
 
 Request Body:
 ```
-{
-    "email": "taylor.swift@gmail.com"
-}
+{ "email": "taylor.swift@gmail.com" }
 ```
 Response Body:
 ```
-{
-    "id": 1,
-    "email": "taylor.swift@gmail.com"
-}
+{ "id": 1, "email": "taylor.swift@gmail.com"}
 ```
 
 Example:
@@ -96,7 +88,6 @@ curl POST -H 'Content-Type: application/json' -d '{"email": "taylor.swift@gmail.
 ```
 
 ### Courses
-
 `GET /courses`
 
 Query Params:
@@ -104,10 +95,7 @@ Query Params:
 
 Response Body:
 ```
-{
-    "id": 1,
-    "name": "mathematics"
-}
+{ "id": 1, "name": "mathematics"}
 ```
 
 Example:
@@ -120,16 +108,11 @@ curl GET 'http://127.0.0.1:8080/courses?name=mathematics'
 
 Request Body:
 ```
-{
-    "name": "mathematics"
-}
+{ "name": "mathematics"}
 ```
 Response Body:
 ```
-{
-    "id": 1,
-    "name": "mathematics"
-}
+{ "id": 1, "name": "mathematics"}
 ```
 
 Example:
@@ -137,8 +120,66 @@ Example:
 curl POST -H 'Content-Type: application/json' -d '{"name": "mathematics"}' http://127.0.0.1:8080/courses
 ```
 
+### Student Courses
+`GET /students-courses/student`
 
+Query Params:
+- `student_email`
 
+Response Body:
+```
+["mathematics", "physics"]
+```
 
+Example:
+```
+curl GET 'http://127.0.0.1:8080/students-courses/student?student_email=taylor.swift@gmail.com'
+```
 
+`GET /students-courses/course`
+
+Query Params:
+- `course_name`
+
+Response Body:
+```
+["taylor.swift@gmail.com", "kanye.west@gmail.com"]
+```
+
+Example:
+```
+curl GET 'http://127.0.0.1:8080/students-courses/course?course_name=physics'
+```
+
+`POST /students-courses`
+
+Request Body:
+```
+{ "student_email": "kanye.west@gmail.com", "course_name": "physics" }
+```
+Response Body:
+```
+"student sign up successful"
+```
+
+Example:
+```
+curl POST -H 'Content-Type: application/json' -d '{"student_email": "kanye.west@gmail.com", "course_name": "physics"}' http://127.0.0.1:8080/students-courses
+```
+
+`DELETE /students-courses`
+
+Request Body:
+```
+{ "student_email": "kanye.west@gmail.com", "course_name": "physics" }
+```
+Response Body:
+```
+"sign-up deleted successfully"
+```
+
+Example:
+```
+curl DELETE -H 'Content-Type: application/json' -d '{"student_email": "kanye.west@gmail.com", "course_name": "physics"}' http://127.0.0.1:8080/students-courses
+```
 
