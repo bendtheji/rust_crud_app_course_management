@@ -1,7 +1,7 @@
 use diesel::prelude::*;
 
 use crate::db::courses::models::Course;
-use crate::db::schema::courses;
+use crate::schema::courses;
 
 pub fn create_course(conn: &mut PgConnection, name: &str) -> QueryResult<Course> {
     diesel::insert_into(courses::table)

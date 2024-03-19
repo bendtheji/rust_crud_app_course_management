@@ -1,7 +1,7 @@
 use diesel::{Associations, Identifiable, Queryable, Selectable};
 
 use crate::db::courses::models::Course;
-use crate::db::schema::students_courses;
+use crate::schema::students_courses;
 use crate::db::students::models::Student;
 
 #[derive(Identifiable, Selectable, Queryable, Associations, Debug, Clone)]

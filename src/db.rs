@@ -7,7 +7,6 @@ use dotenvy::dotenv;
 pub mod students;
 pub mod courses;
 pub mod students_courses;
-pub mod schema;
 
 pub type DbPool = r2d2::Pool<r2d2::ConnectionManager<PgConnection>>;
 

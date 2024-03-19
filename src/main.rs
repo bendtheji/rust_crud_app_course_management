@@ -15,6 +15,7 @@ pub const MIGRATIONS: EmbeddedMigrations = embed_migrations!();
 
 pub mod db;
 mod api;
+pub mod schema;
 
 struct AppState {
     db_connection: PgConnection,

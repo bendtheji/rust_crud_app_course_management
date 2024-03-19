@@ -2,7 +2,7 @@ use diesel::prelude::*;
 
 use crate::db::courses::db_functions as courses_db_functions;
 use crate::db::courses::models::Course;
-use crate::db::schema::*;
+use crate::schema::*;
 use crate::db::students::db_functions as students_db_functions;
 use crate::db::students::models::Student;
 use crate::db::students_courses::models::StudentCourse;

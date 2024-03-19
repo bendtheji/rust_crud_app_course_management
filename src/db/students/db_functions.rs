@@ -1,5 +1,5 @@
 use diesel::prelude::*;
-use crate::db::schema::students;
+use crate::schema::students;
 use crate::db::students::models::Student;
 
 

@@ -1,6 +1,6 @@
 use diesel::{Identifiable, Queryable, Selectable};
 
-use crate::db::schema::students;
+use crate::schema::students;
 
 #[derive(Identifiable, Queryable, Selectable, PartialEq, Debug, Clone)]
 #[diesel(table_name = students)]
