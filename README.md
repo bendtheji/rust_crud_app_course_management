@@ -50,6 +50,10 @@ cargo run
 
 ## APIs
 
+The APIs endpoints for fulfilling the uses cases stated in the assignment description can be found under the `/students-courses` resource section.
+
+
+### Postman
 Import the "Course Management Minden AI.postman_collection.json" file into Postman to get the list of available endpoints.
 
 
