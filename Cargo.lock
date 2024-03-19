@@ -361,6 +361,7 @@ name = "course_management_minden_ai"
 version = "0.1.0"
 dependencies = [
  "actix-web",
+ "derive_more",
  "diesel",
  "dotenvy",
  "serde",
