@@ -3,6 +3,7 @@ use actix_web::body::BoxBody;
 use actix_web::http::header::ContentType;
 use actix_web::http::StatusCode;
 use derive_more::Display;
+use diesel::result::DatabaseErrorKind;
 
 #[derive(Debug, Display)]
 pub enum ApiError {
@@ -14,6 +15,9 @@ pub enum ApiError {
 
     #[display(fmt = "Resource not found")]
     NotFound,
+
+    #[display(fmt = "Unique constraint violated")]
+    UniqueViolation,
 }
 
 impl error::ResponseError for ApiError {
@@ -27,16 +31,18 @@ impl error::ResponseError for ApiError {
         match *self {
             ApiError::InternalError => StatusCode::INTERNAL_SERVER_ERROR,
             ApiError::BadClientData => StatusCode::BAD_REQUEST,
-            ApiError::NotFound => StatusCode::NOT_FOUND
+            ApiError::NotFound => StatusCode::NOT_FOUND,
+            ApiError::UniqueViolation => StatusCode::CONFLICT,
         }
     }
 }
 
 impl From<diesel::result::Error> for ApiError {
     fn from(value: diesel::result::Error) -> Self {
-        use diesel::result::Error;
+        use diesel::result::{DatabaseErrorKind, Error};
         match value {
             Error::NotFound => ApiError::NotFound,
+            Error::DatabaseError(DatabaseErrorKind::UniqueViolation, _) => ApiError::UniqueViolation,
             _ => ApiError::InternalError
         }
     }
