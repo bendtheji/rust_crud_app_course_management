@@ -187,3 +187,11 @@ Example:
 curl DELETE -H 'Content-Type: application/json' -d '{"student_email": "kanye.west@gmail.com", "course_name": "physics"}' http://127.0.0.1:8080/students-courses
 ```
 
+## Tests
+
+To run the tests, you'll need to start PostgreSQL, and you'll need Rust and Cargo as well.
+
+Once PostgreSQL is started, you can run:
+```
+cargo test
+```
