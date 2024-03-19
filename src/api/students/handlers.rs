@@ -1,7 +1,8 @@
 use actix_web::{get, post, Responder, Scope, web};
 
+use crate::api::errors::ApiError;
 use crate::api::students::types::{CreateStudentRequest, GetStudentRequest, StudentResponse};
-use crate::db::{DbPool, get_student_by_email, new_student};
+use crate::db;
 
 pub fn student_api_scope() -> Scope {
     web::scope("/students")
@@ -10,15 +11,16 @@ pub fn student_api_scope() -> Scope {
 }
 
 #[get("")]
-async fn get_student(data: web::Data<DbPool>, params: web::Query<GetStudentRequest>) -> impl Responder {
+async fn get_student(data: web::Data<db::DbPool>, params: web::Query<GetStudentRequest>) -> Result<impl Responder, ApiError> {
     let mut connection = data.get().unwrap();
-    let student = get_student_by_email(&mut connection, &params.email);
-    StudentResponse::from(student)
+    let student = db::get_student(&mut connection, &params.email)?;
+    Ok(StudentResponse::from(student))
 }
 
 #[post("")]
-async fn create_student(data: web::Data<DbPool>, req: web::Json<CreateStudentRequest>) -> Result<String, std::io::Error, > {
+async fn create_student(data: web::Data<db::DbPool>, req: web::Json<CreateStudentRequest>) -> Result<impl Responder, ApiError> {
     let mut connection = data.get().unwrap();
     let new_email = &req.email;
-    Ok(format!("{:?}", new_student(&mut connection, new_email)))
+    let student = db::create_student(&mut connection, new_email)?;
+    Ok(StudentResponse::from(student))
 }

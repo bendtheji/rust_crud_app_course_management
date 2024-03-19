@@ -1,7 +1,8 @@
-use actix_web::{delete, get, post, Responder, Scope, web};
+use actix_web::{delete, get, HttpResponse, post, Responder, Scope, web};
 
+use crate::api::errors::ApiError;
 use crate::api::students_courses::types::{CreateStudentCourseRequest, DeleteStudentCourseRequest, GetStudentCourseByCourseRequest, GetStudentCourseByStudentRequest};
-use crate::db::{cancel_sign_up, DbPool, get_course_by_name, get_courses_attended_by_student, get_student_by_email, get_students_in_course, new_students_courses};
+use crate::db;
 
 pub fn students_courses_api_scope() -> Scope {
     web::scope("/students-courses")
@@ -12,30 +13,33 @@ pub fn students_courses_api_scope() -> Scope {
 }
 
 #[post("")]
-async fn create_student_course(data: web::Data<DbPool>, req: web::Json<CreateStudentCourseRequest>) -> Result<String, std::io::Error> {
+async fn create_student_course(data: web::Data<db::DbPool>, req: web::Json<CreateStudentCourseRequest>) -> Result<impl Responder, ApiError> {
     let mut connection = data.get().unwrap();
-    let student = get_student_by_email(&mut connection, &req.student_email);
-    let course = get_course_by_name(&mut connection, &req.course_name);
-    Ok(format!("{:?}", new_students_courses(&mut connection, student.id, course.id)))
+    let student = db::get_student(&mut connection, &req.student_email)?;
+    let course = db::get_course(&mut connection, &req.course_name)?;
+    db::create_student_course(&mut connection, student.id, course.id)?;
+    Ok(HttpResponse::Ok().body("student sign up successful"))
 }
 
 #[get("/student")]
-async fn get_courses_for_student(data: web::Data<DbPool>, params: web::Query<GetStudentCourseByStudentRequest>) -> impl Responder {
+async fn get_courses_for_student(data: web::Data<db::DbPool>, params: web::Query<GetStudentCourseByStudentRequest>) -> Result<impl Responder, ApiError> {
     let mut connection = data.get().unwrap();
-    let courses_vec = get_courses_attended_by_student(&mut connection, &params.student_email);
-    format!("{:?}", courses_vec.into_iter().map(|x| x.name).collect::<Vec<String>>())
+    let courses_vec = db::get_courses_attended_by_student(&mut connection, &params.student_email)?;
+    let courses_list = format!("{:?}", courses_vec.into_iter().map(|x| x.name).collect::<Vec<String>>());
+    Ok(HttpResponse::Ok().body(courses_list))
 }
 
 #[delete("")]
-async fn delete_student_course(data: web::Data<DbPool>, req: web::Json<DeleteStudentCourseRequest>) -> Result<String, std::io::Error> {
+async fn delete_student_course(data: web::Data<db::DbPool>, req: web::Json<DeleteStudentCourseRequest>) -> Result<impl Responder, ApiError> {
     let mut connection = data.get().unwrap();
-    cancel_sign_up(&mut connection, &req.student_email, &req.course_name);
-    Ok("deleted".to_string())
+    db::delete_student_course(&mut connection, &req.student_email, &req.course_name)?;
+    Ok(HttpResponse::Ok().body("sign-up deleted successfully"))
 }
 
 #[get("/course")]
-async fn fetch_students_in_course(data: web::Data<DbPool>, params: web::Query<GetStudentCourseByCourseRequest>) -> impl Responder {
+async fn fetch_students_in_course(data: web::Data<db::DbPool>, params: web::Query<GetStudentCourseByCourseRequest>) -> Result<impl Responder, ApiError> {
     let mut connection = data.get().unwrap();
-    let students_vec = get_students_in_course(&mut connection, &params.course_name);
-    format!("{:?}", students_vec.into_iter().map(|x| x.email).collect::<Vec<String>>())
+    let students_vec = db::get_students_in_course(&mut connection, &params.course_name)?;
+    let students_list = format!("{:?}", students_vec.into_iter().map(|x| x.email).collect::<Vec<String>>());
+    Ok(HttpResponse::Ok().body(students_list))
 }

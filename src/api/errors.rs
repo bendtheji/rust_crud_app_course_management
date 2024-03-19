@@ -5,7 +5,7 @@ use actix_web::http::StatusCode;
 use derive_more::Display;
 
 #[derive(Debug, Display)]
-enum ApiError {
+pub enum ApiError {
     #[display(fmt = "internal error")]
     InternalError,
 
@@ -28,6 +28,16 @@ impl error::ResponseError for ApiError {
             ApiError::InternalError => StatusCode::INTERNAL_SERVER_ERROR,
             ApiError::BadClientData => StatusCode::BAD_REQUEST,
             ApiError::NotFound => StatusCode::NOT_FOUND
+        }
+    }
+}
+
+impl From<diesel::result::Error> for ApiError {
+    fn from(value: diesel::result::Error) -> Self {
+        use diesel::result::Error;
+        match value {
+            Error::NotFound => ApiError::NotFound,
+            _ => ApiError::InternalError
         }
     }
 }
