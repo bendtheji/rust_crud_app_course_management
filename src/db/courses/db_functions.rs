@@ -16,8 +16,8 @@ pub fn get_course(conn: &mut PgConnection, name: &str) -> QueryResult<Course> {
         .first(conn)
 }
 
-pub fn delete_student(conn: &mut PgConnection, course_id: i32) -> QueryResult<usize> {
-    let predicate = courses::id.eq(course_id);
+pub fn delete_course(conn: &mut PgConnection, course_name: &str) -> QueryResult<usize> {
+    let predicate = courses::name.eq(course_name);
     diesel::delete(courses::table.filter(predicate)).execute(conn)
 }
 
