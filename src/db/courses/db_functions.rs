@@ -3,6 +3,34 @@ use diesel::prelude::*;
 use crate::db::courses::models::Course;
 use crate::schema::courses;
 
+pub trait CourseDao {
+    fn create_course(&mut self, name: &str) -> QueryResult<Course>;
+    fn get_course(&mut self, name: &str) -> QueryResult<Course>;
+}
+
+pub struct CourseImpl<'a> {
+    conn: &'a mut PgConnection,
+}
+
+impl<'a> CourseImpl<'a> {
+    pub fn new(conn: &'a mut PgConnection) -> Self { Self { conn } }
+}
+
+impl CourseDao for CourseImpl<'_> {
+    fn create_course(&mut self, name: &str) -> QueryResult<Course> {
+        diesel::insert_into(courses::table)
+            .values(courses::name.eq(name))
+            .returning(Course::as_returning())
+            .get_result(self.conn)
+    }
+
+    fn get_course(&mut self, name: &str) -> QueryResult<Course> {
+        courses::table.filter(courses::name.eq(name))
+            .select(Course::as_select())
+            .first(self.conn)
+    }
+}
+
 pub fn create_course(conn: &mut PgConnection, name: &str) -> QueryResult<Course> {
     diesel::insert_into(courses::table)
         .values(courses::name.eq(name))
@@ -28,7 +56,8 @@ mod tests {
     fn test_create_course() {
         let mut conn = db::establish_connection();
         conn.test_transaction::<_, Error, _>(|conn| {
-            let course = create_course(conn, "mathematics")?;
+            let mut course_impl = CourseImpl::new(conn);
+            let course = course_impl.create_course("mathematics")?;
             assert_eq!("mathematics", course.name);
             Ok(())
         });
@@ -38,8 +67,9 @@ mod tests {
     fn test_get_course() {
         let mut conn = db::establish_connection();
         conn.test_transaction::<_, Error, _>(|conn| {
-            create_course(conn, "mathematics")?;
-            let course = get_course(conn, "mathematics")?;
+            let mut course_impl = CourseImpl::new(conn);
+            course_impl.create_course("mathematics")?;
+            let course = course_impl.get_course("mathematics")?;
             assert_eq!("mathematics", course.name);
             Ok(())
         });
@@ -50,8 +80,9 @@ mod tests {
     fn test_get_course_not_found() {
         let mut conn = db::establish_connection();
         conn.test_transaction::<_, Error, _>(|conn| {
-            create_course(conn, "mathematics")?;
-            let student = create_course(conn, "physics")?;
+            let mut course_impl = CourseImpl::new(conn);
+            course_impl.create_course("mathematics")?;
+            let student = course_impl.create_course("physics")?;
             Ok(())
         });
     }
@@ -61,8 +92,9 @@ mod tests {
     fn test_create_course_not_unique_name() {
         let mut conn = db::establish_connection();
         conn.test_transaction::<_, Error, _>(|conn| {
-            create_course(conn, "mathematics")?;
-            create_course(conn, "mathematics")?;
+            let mut course_impl = CourseImpl::new(conn);
+            course_impl.create_course("mathematics")?;
+            course_impl.create_course("mathematics")?;
             Ok(())
         });
     }
