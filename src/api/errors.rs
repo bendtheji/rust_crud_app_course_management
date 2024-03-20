@@ -1,5 +1,5 @@
 use std::error::Error;
-use std::fmt::{Debug, Display};
+use std::fmt::Debug;
 
 use actix_web::{error, HttpResponse};
 use actix_web::body::BoxBody;

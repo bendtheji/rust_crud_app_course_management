@@ -56,7 +56,7 @@ mod tests {
         let mut conn = db::establish_connection();
         conn.test_transaction::<_, Error, _>(|conn| {
             create_student(conn, "test_user@gmail.com")?;
-            let student = get_student(conn, "test_user_two@gmail.com")?;
+            let _student = get_student(conn, "test_user_two@gmail.com")?;
             Ok(())
         });
     }

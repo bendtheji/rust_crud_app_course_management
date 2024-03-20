@@ -31,7 +31,7 @@ mod tests {
     use actix_web::{App, test, web};
     use diesel::PgConnection;
 
-    use crate::api::students::handlers::{get_student, student_api_scope};
+    use crate::api::students::handlers::student_api_scope;
     use crate::api::students::types::CreateStudentRequest;
     use crate::db::initialize_db_pool;
     use crate::db::students::db_functions;

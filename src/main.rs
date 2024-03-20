@@ -1,10 +1,9 @@
 use std::env;
 
-use actix_web::{App, HttpServer, Responder, web};
+use actix_web::{App, HttpServer, web};
 use diesel::PgConnection;
 use diesel_migrations::{embed_migrations, EmbeddedMigrations, MigrationHarness};
 use dotenvy::dotenv;
-use serde::{Deserialize, Serialize};
 
 use crate::api::courses::handlers::courses_api_scope;
 use crate::api::students::handlers::student_api_scope;
@@ -17,9 +16,6 @@ pub mod db;
 mod api;
 pub mod schema;
 
-struct AppState {
-    db_connection: PgConnection,
-}
 
 fn run_migration(conn: &mut PgConnection) {
     conn.run_pending_migrations(MIGRATIONS).unwrap();

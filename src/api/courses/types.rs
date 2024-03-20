@@ -30,7 +30,7 @@ impl From<Course> for CourseResponse {
 impl Responder for CourseResponse {
     type Body = BoxBody;
 
-    fn respond_to(self, req: &HttpRequest) -> HttpResponse<Self::Body> {
+    fn respond_to(self, _req: &HttpRequest) -> HttpResponse<Self::Body> {
         let body = serde_json::to_string(&self).unwrap();
 
         HttpResponse::Ok()
