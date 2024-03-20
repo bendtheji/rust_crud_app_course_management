@@ -1,7 +1,7 @@
 use diesel::prelude::*;
-use crate::schema::students;
-use crate::db::students::models::Student;
 
+use crate::db::students::models::Student;
+use crate::schema::students;
 
 pub fn create_student(conn: &mut PgConnection, email: &str) -> QueryResult<Student> {
     diesel::insert_into(students::table)
@@ -16,11 +16,17 @@ pub fn get_student(conn: &mut PgConnection, email: &str) -> QueryResult<Student>
         .first(conn)
 }
 
+pub fn delete_student(conn: &mut PgConnection, student_email: &str) -> QueryResult<usize> {
+    let predicate = students::email.eq(student_email);
+    diesel::delete(students::table.filter(predicate)).execute(conn)
+}
+
 #[cfg(test)]
 mod tests {
     use diesel::{Connection, result::Error};
 
     use crate::db;
+
     use super::*;
 
     #[test]

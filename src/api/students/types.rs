@@ -9,7 +9,7 @@ pub struct GetStudentRequest {
     pub email: String
 }
 
-#[derive(Deserialize)]
+#[derive(Serialize, Deserialize)]
 pub struct CreateStudentRequest {
     pub email: String,
 }
