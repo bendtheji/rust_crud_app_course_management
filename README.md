@@ -195,3 +195,8 @@ Once PostgreSQL is started, you can run:
 ```
 cargo test
 ```
+
+### Testing for API endpoints
+Currently the testing used for API endpoints are not the best solution for testing the different flows.
+
+A better alternative would be to use mock objects for the DAO objects so that we don't have a heavy dependency on the DB.
