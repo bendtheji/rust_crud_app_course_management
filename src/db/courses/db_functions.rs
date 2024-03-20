@@ -56,7 +56,7 @@ mod tests {
         let mut conn = db::establish_connection();
         conn.test_transaction::<_, Error, _>(|conn| {
             create_course(conn, "mathematics")?;
-            let _course = create_course(conn, "physics")?;
+            let _course = get_course(conn, "physics")?;
             Ok(())
         });
     }
