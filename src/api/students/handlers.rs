@@ -27,7 +27,7 @@ async fn create_student(data: web::Data<db::DbPool>, req: web::Json<CreateStuden
 }
 
 #[cfg(test)]
-mod tests {
+pub mod tests {
     use actix_web::{App, test, web};
     use diesel::PgConnection;
 
@@ -123,14 +123,14 @@ mod tests {
         cleanup(&mut pool.clone().get().unwrap(), &student);
     }
 
-    fn setup_existing_student(should_exist: bool, conn: &mut PgConnection, email: &str) {
+    pub fn setup_existing_student(should_exist: bool, conn: &mut PgConnection, email: &str) {
         match should_exist {
             true => db_functions::create_student(conn, email).map(|_| ()).expect("setup failed"),
             false => db_functions::delete_student(conn, email).map(|_| ()).expect("setup failed"),
         };
     }
 
-    fn cleanup(conn: &mut PgConnection, email: &str) {
+    pub fn cleanup(conn: &mut PgConnection, email: &str) {
         db_functions::delete_student(conn, email).expect("cleanup failed");
     }
 }

@@ -27,7 +27,7 @@ async fn create_course(data: web::Data<db::DbPool>, req: web::Json<CreateCourseR
 }
 
 #[cfg(test)]
-mod tests {
+pub mod tests {
     use actix_web::{App, test, web};
     use diesel::PgConnection;
 
@@ -123,14 +123,14 @@ mod tests {
         cleanup(&mut pool.clone().get().unwrap(), &course);
     }
 
-    fn setup_existing_course(should_exist: bool, conn: &mut PgConnection, name: &str) {
+    pub fn setup_existing_course(should_exist: bool, conn: &mut PgConnection, name: &str) {
         match should_exist {
             true => db_functions::create_course(conn, name).map(|_| ()).expect("setup failed"),
             false => db_functions::delete_course(conn, name).map(|_| ()).expect("setup failed"),
         };
     }
 
-    fn cleanup(conn: &mut PgConnection, email: &str) {
+    pub fn cleanup(conn: &mut PgConnection, email: &str) {
         db_functions::delete_course(conn, email).expect("cleanup failed");
     }
 }
