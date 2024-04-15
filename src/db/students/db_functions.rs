@@ -1,11 +1,11 @@
 use diesel::prelude::*;
 
-use crate::db::students::models::Student;
+use crate::db::students::models::{NewStudent, Student};
 use crate::schema::students;
 
-pub fn create_student(conn: &mut PgConnection, email: &str) -> QueryResult<Student> {
+pub fn create_student(conn: &mut PgConnection, new_student: NewStudent) -> QueryResult<Student> {
     diesel::insert_into(students::table)
-        .values(students::email.eq(email))
+        .values(&new_student)
         .returning(Student::as_returning())
         .get_result(conn)
 }
@@ -33,7 +33,8 @@ mod tests {
     fn test_create_student() {
         let mut conn = db::establish_connection();
         conn.test_transaction::<_, Error, _>(|conn| {
-            let student = create_student(conn, "test_user@gmail.com")?;
+            let new_student = NewStudent { email: String::from("test_user@gmail.com") };
+            let student = create_student(conn, new_student)?;
             assert_eq!("test_user@gmail.com", student.email);
             Ok(())
         });
@@ -43,7 +44,8 @@ mod tests {
     fn test_get_student() {
         let mut conn = db::establish_connection();
         conn.test_transaction::<_, Error, _>(|conn| {
-            create_student(conn, "test_user@gmail.com")?;
+            let new_student = NewStudent { email: String::from("test_user@gmail.com") };
+            create_student(conn, new_student)?;
             let student = get_student(conn, "test_user@gmail.com")?;
             assert_eq!("test_user@gmail.com", student.email);
             Ok(())
@@ -55,7 +57,8 @@ mod tests {
     fn test_get_student_not_found() {
         let mut conn = db::establish_connection();
         conn.test_transaction::<_, Error, _>(|conn| {
-            create_student(conn, "test_user@gmail.com")?;
+            let new_student = NewStudent { email: String::from("test_user@gmail.com") };
+            create_student(conn, new_student)?;
             let _student = get_student(conn, "test_user_two@gmail.com")?;
             Ok(())
         });
@@ -66,8 +69,9 @@ mod tests {
     fn test_create_student_not_unique_email() {
         let mut conn = db::establish_connection();
         conn.test_transaction::<_, Error, _>(|conn| {
-            create_student(conn, "test_user@gmail.com")?;
-            create_student(conn, "test_user@gmail.com")?;
+            let new_student = NewStudent { email: String::from("test_user@gmail.com") };
+            create_student(conn, new_student.clone())?;
+            create_student(conn, new_student)?;
             Ok(())
         });
     }
