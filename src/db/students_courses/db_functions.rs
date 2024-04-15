@@ -53,7 +53,7 @@ mod tests {
     fn test_get_courses_attended_by_students() {
         let mut conn = db::establish_connection();
         conn.test_transaction::<_, Error, _>(|conn| {
-            let new_student = NewStudent { email: String::from("some_user@gmail.com") };
+            let new_student = NewStudent { email: String::from("some_user@gmail.com"), ..Default::default() };
             let student = students_db_functions::create_student(conn, new_student)?;
             let course_one = courses_db_functions::create_course(conn, "data science")?;
             let course_two = courses_db_functions::create_course(conn, "machine learning")?;
@@ -72,7 +72,7 @@ mod tests {
     fn test_get_courses_attended_by_students_student_not_found() {
         let mut conn = db::establish_connection();
         conn.test_transaction::<_, Error, _>(|conn| {
-            let new_student = NewStudent { email: String::from("some_user@gmail.com") };
+            let new_student = NewStudent { email: String::from("some_user@gmail.com"), ..Default::default() };
             let student = students_db_functions::create_student(conn, new_student)?;
             let course_one = courses_db_functions::create_course(conn, "data science")?;
             let course_two = courses_db_functions::create_course(conn, "machine learning")?;
@@ -90,9 +90,9 @@ mod tests {
     fn test_get_students_in_course() {
         let mut conn = db::establish_connection();
         conn.test_transaction::<_, Error, _>(|conn| {
-            let new_student = NewStudent { email: String::from("some_user@gmail.com") };
+            let new_student = NewStudent { email: String::from("some_user@gmail.com"), ..Default::default() };
             let student_one = students_db_functions::create_student(conn, new_student)?;
-            let new_student = NewStudent { email: String::from("some_user_two@gmail.com") };
+            let new_student = NewStudent { email: String::from("some_user_two@gmail.com"), ..Default::default() };
             let student_two = students_db_functions::create_student(conn, new_student)?;
             let course = courses_db_functions::create_course(conn, "machine learning")?;
             create_student_course(conn, student_one.id, course.id)?;
@@ -110,9 +110,9 @@ mod tests {
     fn test_get_students_in_course_course_not_found() {
         let mut conn = db::establish_connection();
         conn.test_transaction::<_, Error, _>(|conn| {
-            let new_student = NewStudent { email: String::from("some_user@gmail.com") };
+            let new_student = NewStudent { email: String::from("some_user@gmail.com"), ..Default::default() };
             let student_one = students_db_functions::create_student(conn, new_student)?;
-            let new_student = NewStudent { email: String::from("some_user_two@gmail.com") };
+            let new_student = NewStudent { email: String::from("some_user_two@gmail.com"), ..Default::default() };
             let student_two = students_db_functions::create_student(conn, new_student)?;
             let course = courses_db_functions::create_course(conn, "machine learning")?;
             create_student_course(conn, student_one.id, course.id)?;
@@ -129,7 +129,7 @@ mod tests {
     fn test_create_student_course() {
         let mut conn = db::establish_connection();
         conn.test_transaction::<_, Error, _>(|conn| {
-            let new_student = NewStudent { email: String::from("some_user@gmail.com") };
+            let new_student = NewStudent { email: String::from("some_user@gmail.com"), ..Default::default() };
             let student = students_db_functions::create_student(conn, new_student)?;
             let course = courses_db_functions::create_course(conn, "machine learning")?;
             create_student_course(conn, student.id, course.id)?;
@@ -142,7 +142,7 @@ mod tests {
     fn test_create_student_course_duplicate() {
         let mut conn = db::establish_connection();
         conn.test_transaction::<_, Error, _>(|conn| {
-            let new_student = NewStudent { email: String::from("some_user@gmail.com") };
+            let new_student = NewStudent { email: String::from("some_user@gmail.com"), ..Default::default() };
             let student = students_db_functions::create_student(conn, new_student)?;
             let course = courses_db_functions::create_course(conn, "machine learning")?;
             create_student_course(conn, student.id, course.id)?;
@@ -155,7 +155,7 @@ mod tests {
     fn test_delete_student_course() {
         let mut conn = db::establish_connection();
         conn.test_transaction::<_, Error, _>(|conn| {
-            let new_student = NewStudent { email: String::from("some_user@gmail.com") };
+            let new_student = NewStudent { email: String::from("some_user@gmail.com"), ..Default::default() };
             let student = students_db_functions::create_student(conn, new_student)?;
             let course = courses_db_functions::create_course(conn, "machine learning")?;
             create_student_course(conn, student.id, course.id)?;

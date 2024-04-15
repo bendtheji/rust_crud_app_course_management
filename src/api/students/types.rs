@@ -1,15 +1,16 @@
-use actix_web::body::BoxBody;
 use actix_web::{HttpRequest, HttpResponse, Responder};
+use actix_web::body::BoxBody;
 use actix_web::http::header::ContentType;
 use serde::{Deserialize, Serialize};
+
 use crate::db::students::models::Student;
 
 #[derive(Deserialize)]
 pub struct GetStudentRequest {
-    pub email: String
+    pub email: String,
 }
 
-#[derive(Serialize, Deserialize, Clone)]
+#[derive(Serialize, Deserialize, Clone, Default)]
 pub struct CreateStudentRequest {
     pub email: String,
 }

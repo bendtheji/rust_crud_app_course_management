@@ -18,6 +18,9 @@ pub struct NewStudent {
 
 impl From<CreateStudentRequest> for NewStudent {
     fn from(value: CreateStudentRequest) -> Self {
-        Self { email: value.email }
+        Self {
+            email: value.email,
+            ..Default::default()
+        }
     }
 }

@@ -33,7 +33,7 @@ mod tests {
     fn test_create_student() {
         let mut conn = db::establish_connection();
         conn.test_transaction::<_, Error, _>(|conn| {
-            let new_student = NewStudent { email: String::from("test_user@gmail.com") };
+            let new_student = NewStudent { email: String::from("test_user@gmail.com"), ..Default::default() };
             let student = create_student(conn, new_student)?;
             assert_eq!("test_user@gmail.com", student.email);
             Ok(())
@@ -44,7 +44,7 @@ mod tests {
     fn test_get_student() {
         let mut conn = db::establish_connection();
         conn.test_transaction::<_, Error, _>(|conn| {
-            let new_student = NewStudent { email: String::from("test_user@gmail.com") };
+            let new_student = NewStudent { email: String::from("test_user@gmail.com"), ..Default::default() };
             create_student(conn, new_student)?;
             let student = get_student(conn, "test_user@gmail.com")?;
             assert_eq!("test_user@gmail.com", student.email);
@@ -57,7 +57,7 @@ mod tests {
     fn test_get_student_not_found() {
         let mut conn = db::establish_connection();
         conn.test_transaction::<_, Error, _>(|conn| {
-            let new_student = NewStudent { email: String::from("test_user@gmail.com") };
+            let new_student = NewStudent { email: String::from("test_user@gmail.com"), ..Default::default() };
             create_student(conn, new_student)?;
             let _student = get_student(conn, "test_user_two@gmail.com")?;
             Ok(())
@@ -69,7 +69,7 @@ mod tests {
     fn test_create_student_not_unique_email() {
         let mut conn = db::establish_connection();
         conn.test_transaction::<_, Error, _>(|conn| {
-            let new_student = NewStudent { email: String::from("test_user@gmail.com") };
+            let new_student = NewStudent { email: String::from("test_user@gmail.com"), ..Default::default() };
             create_student(conn, new_student.clone())?;
             create_student(conn, new_student)?;
             Ok(())

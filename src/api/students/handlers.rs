@@ -43,7 +43,7 @@ pub mod tests {
     #[actix_web::test]
     async fn test_create_student_happy_path() {
         let pool = initialize_db_pool();
-        let request = CreateStudentRequest { email: String::from("sample_user_one@gmail.com") };
+        let request = CreateStudentRequest { email: String::from("sample_user_one@gmail.com"), ..Default::default() };
         setup_existing_student(false, &mut pool.clone().get().unwrap(), request.clone().into());
 
         let app = test::init_service(
@@ -65,7 +65,7 @@ pub mod tests {
     #[actix_web::test]
     async fn test_create_student_invalid_email_format() {
         let pool = initialize_db_pool();
-        let request = CreateStudentRequest { email: String::from("invalid email") };
+        let request = CreateStudentRequest { email: String::from("invalid email"), ..Default::default() };
         setup_existing_student(false, &mut pool.clone().get().unwrap(), request.clone().into());
 
         let app = test::init_service(
@@ -87,7 +87,7 @@ pub mod tests {
     #[actix_web::test]
     async fn test_create_student_duplicate() {
         let pool = initialize_db_pool();
-        let request = CreateStudentRequest { email: String::from("sample_user_two@gmail.com") };
+        let request = CreateStudentRequest { email: String::from("sample_user_two@gmail.com"), ..Default::default() };
         setup_existing_student(true, &mut pool.clone().get().unwrap(), request.clone().into());
 
         let app = test::init_service(
@@ -110,7 +110,7 @@ pub mod tests {
     #[actix_web::test]
     async fn test_get_student_happy_path() {
         let pool = initialize_db_pool();
-        let request = CreateStudentRequest { email: String::from("sample_user_three@gmail.com") };
+        let request = CreateStudentRequest { email: String::from("sample_user_three@gmail.com"), ..Default::default() };
         setup_existing_student(true, &mut pool.clone().get().unwrap(), request.clone().into());
 
         let app = test::init_service(
@@ -131,7 +131,7 @@ pub mod tests {
     #[actix_web::test]
     async fn test_get_student_not_found() {
         let pool = initialize_db_pool();
-        let request = CreateStudentRequest { email: String::from("sample_user_four@gmail.com") };
+        let request = CreateStudentRequest { email: String::from("sample_user_four@gmail.com"), ..Default::default() };
         setup_existing_student(false, &mut pool.clone().get().unwrap(), request.clone().into());
 
         let app = test::init_service(
