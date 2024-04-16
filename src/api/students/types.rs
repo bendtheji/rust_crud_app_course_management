@@ -13,17 +13,23 @@ pub struct GetStudentRequest {
 #[derive(Serialize, Deserialize, Clone, Default)]
 pub struct CreateStudentRequest {
     pub email: String,
+    pub phone_number: Option<String>,
 }
 
 #[derive(Serialize)]
 pub struct StudentResponse {
     id: i32,
     email: String,
+    phone_number: Option<String>,
 }
 
 impl From<Student> for StudentResponse {
     fn from(student: Student) -> Self {
-        StudentResponse { id: student.id, email: student.email }
+        StudentResponse {
+            id: student.id,
+            email: student.email,
+            phone_number: student.phone_number,
+        }
     }
 }
 
