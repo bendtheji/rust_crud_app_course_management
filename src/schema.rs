@@ -12,6 +12,8 @@ diesel::table! {
     students (id) {
         id -> Int4,
         email -> Varchar,
+        created_at -> Nullable<Timestamp>,
+        updated_at -> Nullable<Timestamp>,
         phone_number -> Nullable<Varchar>,
     }
 }
