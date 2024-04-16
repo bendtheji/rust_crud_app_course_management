@@ -13,17 +13,23 @@ pub struct GetCourseRequest {
 #[derive(Serialize, Deserialize, Clone, Default)]
 pub struct CreateCourseRequest {
     pub name: String,
+    pub course_desc: Option<String>,
 }
 
 #[derive(Serialize, Debug)]
 pub struct CourseResponse {
     id: i32,
     name: String,
+    course_desc: Option<String>,
 }
 
 impl From<Course> for CourseResponse {
     fn from(course: Course) -> Self {
-        CourseResponse { id: course.id, name: course.name }
+        CourseResponse {
+            id: course.id,
+            name: course.name,
+            course_desc: course.course_desc,
+        }
     }
 }
 

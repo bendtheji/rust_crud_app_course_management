@@ -4,6 +4,7 @@ diesel::table! {
     courses (id) {
         id -> Int4,
         name -> Varchar,
+        course_desc -> Nullable<Varchar>,
     }
 }
 
