@@ -4,6 +4,8 @@ use crate::api::courses::types::{CourseResponse, CreateCourseRequest, GetCourseR
 use crate::api::errors::ApiError;
 use crate::db;
 use crate::db::courses::db_functions;
+use crate::db::courses::models::NewCourse;
+use crate::schema::courses::name;
 
 pub fn courses_api_scope() -> Scope {
     web::scope("/courses")
@@ -21,8 +23,7 @@ async fn get_course(data: web::Data<db::DbPool>, params: web::Query<GetCourseReq
 #[post("")]
 async fn create_course(data: web::Data<db::DbPool>, req: web::Json<CreateCourseRequest>) -> Result<impl Responder, ApiError> {
     let mut connection = data.get().unwrap();
-    let new_course_name = &req.name;
-    let course = db_functions::create_course(&mut connection, new_course_name)?;
+    let course = db_functions::create_course(&mut connection, req.0.into())?;
     Ok(CourseResponse::from(course))
 }
 
@@ -34,13 +35,14 @@ pub mod tests {
     use crate::api::courses::handlers::courses_api_scope;
     use crate::api::courses::types::CreateCourseRequest;
     use crate::db::courses::db_functions;
+    use crate::db::courses::models::NewCourse;
     use crate::db::initialize_db_pool;
 
     #[actix_web::test]
     async fn test_create_course_happy_path() {
         let pool = initialize_db_pool();
-        let course = "pizza making".to_string();
-        setup_existing_course(false, &mut pool.clone().get().unwrap(), &course);
+        let request = CreateCourseRequest { name: String::from("pizza making"), ..Default::default() };
+        setup_existing_course(false, &mut pool.clone().get().unwrap(), request.clone().into());
 
         let app = test::init_service(
             App::new()
@@ -50,19 +52,19 @@ pub mod tests {
 
         let req = test::TestRequest::post()
             .uri("/courses")
-            .set_json(CreateCourseRequest { name: course.clone() })
+            .set_json(request.clone())
             .to_request();
         let resp = test::call_service(&app, req).await;
         assert!(resp.status().is_success());
 
-        cleanup(&mut pool.clone().get().unwrap(), &course);
+        cleanup(&mut pool.clone().get().unwrap(), &request.name);
     }
 
     #[actix_web::test]
     async fn test_create_course_duplicate() {
         let pool = initialize_db_pool();
-        let course = "pizza baking".to_string();
-        setup_existing_course(true, &mut pool.clone().get().unwrap(), &course);
+        let request = CreateCourseRequest { name: String::from("pizza baking"), ..Default::default() };
+        setup_existing_course(true, &mut pool.clone().get().unwrap(), request.clone().into());
 
         let app = test::init_service(
             App::new()
@@ -72,20 +74,21 @@ pub mod tests {
 
         let req = test::TestRequest::post()
             .uri("/courses")
-            .set_json(CreateCourseRequest { name: course.clone() })
+            .set_json(request.clone())
             .to_request();
         let resp = test::call_service(&app, req).await;
 
         assert!(resp.status().is_client_error());
 
-        cleanup(&mut pool.clone().get().unwrap(), &course);
+        cleanup(&mut pool.clone().get().unwrap(), &request.name);
     }
 
     #[actix_web::test]
     async fn test_get_course_happy_path() {
         let pool = initialize_db_pool();
+        let request = CreateCourseRequest { name: String::from("astronomy"), ..Default::default() };
         let course = "astronomy".to_string();
-        setup_existing_course(true, &mut pool.clone().get().unwrap(), &course);
+        setup_existing_course(true, &mut pool.clone().get().unwrap(), request.clone().into());
 
         let app = test::init_service(
             App::new()
@@ -94,19 +97,19 @@ pub mod tests {
         ).await;
 
         let req = test::TestRequest::get()
-            .uri(&format!("/courses?name={}", &course))
+            .uri(&format!("/courses?name={}", &request.name))
             .to_request();
         let resp = test::call_service(&app, req).await;
         assert!(resp.status().is_success());
 
-        cleanup(&mut pool.clone().get().unwrap(), &course);
+        cleanup(&mut pool.clone().get().unwrap(), &request.name);
     }
 
     #[actix_web::test]
     async fn test_get_course_not_found() {
         let pool = initialize_db_pool();
-        let course = "astrology".to_string();
-        setup_existing_course(false, &mut pool.clone().get().unwrap(), &course);
+        let request = CreateCourseRequest { name: String::from("astrology"), ..Default::default() };
+        setup_existing_course(false, &mut pool.clone().get().unwrap(), request.clone().into());
 
         let app = test::init_service(
             App::new()
@@ -115,18 +118,18 @@ pub mod tests {
         ).await;
 
         let req = test::TestRequest::get()
-            .uri(&format!("/courses?name={}", &course))
+            .uri(&format!("/courses?name={}", &request.name))
             .to_request();
         let resp = test::call_service(&app, req).await;
         assert!(resp.status().is_client_error());
 
-        cleanup(&mut pool.clone().get().unwrap(), &course);
+        cleanup(&mut pool.clone().get().unwrap(), &request.name);
     }
 
-    pub fn setup_existing_course(should_exist: bool, conn: &mut PgConnection, name: &str) {
+    pub fn setup_existing_course(should_exist: bool, conn: &mut PgConnection, course: NewCourse) {
         match should_exist {
-            true => db_functions::create_course(conn, name).map(|_| ()).expect("setup failed"),
-            false => db_functions::delete_course(conn, name).map(|_| ()).expect("setup failed"),
+            true => db_functions::create_course(conn, course).map(|_| ()).expect("setup failed"),
+            false => db_functions::delete_course(conn, &course.name).map(|_| ()).expect("setup failed"),
         };
     }
 

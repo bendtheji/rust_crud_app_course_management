@@ -44,6 +44,7 @@ mod tests {
 
     use crate::db;
     use crate::db::courses::db_functions as courses_db_functions;
+    use crate::db::courses::models::NewCourse;
     use crate::db::students::db_functions as students_db_functions;
     use crate::db::students::models::NewStudent;
 
@@ -55,8 +56,10 @@ mod tests {
         conn.test_transaction::<_, Error, _>(|conn| {
             let new_student = NewStudent { email: String::from("some_user@gmail.com"), ..Default::default() };
             let student = students_db_functions::create_student(conn, new_student)?;
-            let course_one = courses_db_functions::create_course(conn, "data science")?;
-            let course_two = courses_db_functions::create_course(conn, "machine learning")?;
+            let new_course = NewCourse { name: String::from("data science"), ..Default::default() };
+            let course_one = courses_db_functions::create_course(conn, new_course)?;
+            let new_course = NewCourse { name: String::from("machine learning"), ..Default::default() };
+            let course_two = courses_db_functions::create_course(conn, new_course)?;
             create_student_course(conn, student.id, course_one.id)?;
             create_student_course(conn, student.id, course_two.id)?;
 
@@ -74,8 +77,10 @@ mod tests {
         conn.test_transaction::<_, Error, _>(|conn| {
             let new_student = NewStudent { email: String::from("some_user@gmail.com"), ..Default::default() };
             let student = students_db_functions::create_student(conn, new_student)?;
-            let course_one = courses_db_functions::create_course(conn, "data science")?;
-            let course_two = courses_db_functions::create_course(conn, "machine learning")?;
+            let new_course = NewCourse { name: String::from("data science"), ..Default::default() };
+            let course_one = courses_db_functions::create_course(conn, new_course)?;
+            let new_course = NewCourse { name: String::from("machine learning"), ..Default::default() };
+            let course_two = courses_db_functions::create_course(conn, new_course)?;
             create_student_course(conn, student.id, course_one.id)?;
             create_student_course(conn, student.id, course_two.id)?;
 
@@ -94,7 +99,8 @@ mod tests {
             let student_one = students_db_functions::create_student(conn, new_student)?;
             let new_student = NewStudent { email: String::from("some_user_two@gmail.com"), ..Default::default() };
             let student_two = students_db_functions::create_student(conn, new_student)?;
-            let course = courses_db_functions::create_course(conn, "machine learning")?;
+            let new_course = NewCourse { name: String::from("machine learning"), ..Default::default() };
+            let course = courses_db_functions::create_course(conn, new_course)?;
             create_student_course(conn, student_one.id, course.id)?;
             create_student_course(conn, student_two.id, course.id)?;
 
@@ -114,7 +120,8 @@ mod tests {
             let student_one = students_db_functions::create_student(conn, new_student)?;
             let new_student = NewStudent { email: String::from("some_user_two@gmail.com"), ..Default::default() };
             let student_two = students_db_functions::create_student(conn, new_student)?;
-            let course = courses_db_functions::create_course(conn, "machine learning")?;
+            let new_course = NewCourse { name: String::from("machine learning"), ..Default::default() };
+            let course = courses_db_functions::create_course(conn, new_course)?;
             create_student_course(conn, student_one.id, course.id)?;
             create_student_course(conn, student_two.id, course.id)?;
 
@@ -131,7 +138,8 @@ mod tests {
         conn.test_transaction::<_, Error, _>(|conn| {
             let new_student = NewStudent { email: String::from("some_user@gmail.com"), ..Default::default() };
             let student = students_db_functions::create_student(conn, new_student)?;
-            let course = courses_db_functions::create_course(conn, "machine learning")?;
+            let new_course = NewCourse { name: String::from("machine learning"), ..Default::default() };
+            let course = courses_db_functions::create_course(conn, new_course)?;
             create_student_course(conn, student.id, course.id)?;
             Ok(())
         })
@@ -144,7 +152,8 @@ mod tests {
         conn.test_transaction::<_, Error, _>(|conn| {
             let new_student = NewStudent { email: String::from("some_user@gmail.com"), ..Default::default() };
             let student = students_db_functions::create_student(conn, new_student)?;
-            let course = courses_db_functions::create_course(conn, "machine learning")?;
+            let new_course = NewCourse { name: String::from("machine learning"), ..Default::default() };
+            let course = courses_db_functions::create_course(conn, new_course)?;
             create_student_course(conn, student.id, course.id)?;
             create_student_course(conn, student.id, course.id)?;
             Ok(())
@@ -157,7 +166,8 @@ mod tests {
         conn.test_transaction::<_, Error, _>(|conn| {
             let new_student = NewStudent { email: String::from("some_user@gmail.com"), ..Default::default() };
             let student = students_db_functions::create_student(conn, new_student)?;
-            let course = courses_db_functions::create_course(conn, "machine learning")?;
+            let new_course = NewCourse { name: String::from("machine learning"), ..Default::default() };
+            let course = courses_db_functions::create_course(conn, new_course)?;
             create_student_course(conn, student.id, course.id)?;
             delete_student_course(conn, student.id, course.id)?;
             Ok(())

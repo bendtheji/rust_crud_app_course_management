@@ -10,7 +10,7 @@ pub struct GetCourseRequest {
     pub name: String,
 }
 
-#[derive(Serialize, Deserialize)]
+#[derive(Serialize, Deserialize, Clone, Default)]
 pub struct CreateCourseRequest {
     pub name: String,
 }

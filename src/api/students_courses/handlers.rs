@@ -55,6 +55,7 @@ pub mod tests {
     use actix_web::web::resource;
 
     use crate::api::courses::handlers::tests as courses_test;
+    use crate::api::courses::types::CreateCourseRequest;
     use crate::api::students::handlers::tests as students_tests;
     use crate::api::students::types::CreateStudentRequest;
     use crate::api::students_courses::handlers::students_courses_api_scope;
@@ -66,8 +67,8 @@ pub mod tests {
         let pool = initialize_db_pool();
         let request = CreateStudentRequest { email: String::from("test_student_one@gmail.com"), ..Default::default() };
         students_tests::setup_existing_student(true, &mut pool.clone().get().unwrap(), request.clone().into());
-        let course = "test_course_one".to_string();
-        courses_test::setup_existing_course(true, &mut pool.clone().get().unwrap(), &course);
+        let course = CreateCourseRequest { name: String::from("test_course_one"), ..Default::default() };
+        courses_test::setup_existing_course(true, &mut pool.clone().get().unwrap(), course.clone().into());
 
         let app = test::init_service(
             App::new()
@@ -77,20 +78,20 @@ pub mod tests {
 
         let req = test::TestRequest::post()
             .uri("/students-courses")
-            .set_json(CreateStudentCourseRequest { student_email: request.email.clone(), course_name: course.clone() })
+            .set_json(CreateStudentCourseRequest { student_email: request.email.clone(), course_name: course.name.clone() })
             .to_request();
         let resp = test::call_service(&app, req).await;
         assert!(resp.status().is_success());
 
         let req = test::TestRequest::delete()
             .uri("/students-courses")
-            .set_json(DeleteStudentCourseRequest { student_email: request.email.clone(), course_name: course.clone() })
+            .set_json(DeleteStudentCourseRequest { student_email: request.email.clone(), course_name: course.name.clone() })
             .to_request();
         let resp = test::call_service(&app, req).await;
         assert!(resp.status().is_success());
 
         students_tests::cleanup(&mut pool.clone().get().unwrap(), &request.email);
-        courses_test::cleanup(&mut pool.clone().get().unwrap(), &course);
+        courses_test::cleanup(&mut pool.clone().get().unwrap(), &course.name);
     }
 
     #[actix_web::test]
@@ -98,8 +99,8 @@ pub mod tests {
         let pool = initialize_db_pool();
         let request = CreateStudentRequest { email: String::from("test_student_two@gmail.com"), ..Default::default() };
         students_tests::setup_existing_student(false, &mut pool.clone().get().unwrap(), request.clone().into());
-        let course = "test_course_two".to_string();
-        courses_test::setup_existing_course(true, &mut pool.clone().get().unwrap(), &course);
+        let course = CreateCourseRequest { name: String::from("test_course_two"), ..Default::default() };
+        courses_test::setup_existing_course(true, &mut pool.clone().get().unwrap(), course.clone().into());
 
         let app = test::init_service(
             App::new()
@@ -109,13 +110,13 @@ pub mod tests {
 
         let req = test::TestRequest::post()
             .uri("/students-courses")
-            .set_json(CreateStudentCourseRequest { student_email: request.email.clone(), course_name: course.clone() })
+            .set_json(CreateStudentCourseRequest { student_email: request.email.clone(), course_name: course.name.clone() })
             .to_request();
         let resp = test::call_service(&app, req).await;
         assert!(resp.status().is_client_error());
 
         students_tests::cleanup(&mut pool.clone().get().unwrap(), &request.email);
-        courses_test::cleanup(&mut pool.clone().get().unwrap(), &course);
+        courses_test::cleanup(&mut pool.clone().get().unwrap(), &course.name);
     }
 
     #[actix_web::test]
@@ -123,8 +124,8 @@ pub mod tests {
         let pool = initialize_db_pool();
         let request = CreateStudentRequest { email: String::from("test_student_three@gmail.com"), ..Default::default() };
         students_tests::setup_existing_student(true, &mut pool.clone().get().unwrap(), request.clone().into());
-        let course = "test_course_three".to_string();
-        courses_test::setup_existing_course(false, &mut pool.clone().get().unwrap(), &course);
+        let course = CreateCourseRequest { name: String::from("test_course_three"), ..Default::default() };
+        courses_test::setup_existing_course(false, &mut pool.clone().get().unwrap(), course.clone().into());
 
         let app = test::init_service(
             App::new()
@@ -134,14 +135,14 @@ pub mod tests {
 
         let req = test::TestRequest::post()
             .uri("/students-courses")
-            .set_json(CreateStudentCourseRequest { student_email: request.email.clone(), course_name: course.clone() })
+            .set_json(CreateStudentCourseRequest { student_email: request.email.clone(), course_name: course.name.clone() })
             .to_request();
         let resp = test::call_service(&app, req).await;
         assert!(resp.status().is_client_error());
 
 
         students_tests::cleanup(&mut pool.clone().get().unwrap(), &request.email);
-        courses_test::cleanup(&mut pool.clone().get().unwrap(), &course);
+        courses_test::cleanup(&mut pool.clone().get().unwrap(), &course.name);
     }
 
     #[actix_web::test]
@@ -149,8 +150,8 @@ pub mod tests {
         let pool = initialize_db_pool();
         let request = CreateStudentRequest { email: String::from("test_student_four@gmail.com"), ..Default::default() };
         students_tests::setup_existing_student(true, &mut pool.clone().get().unwrap(), request.clone().into());
-        let course = "test_course_four".to_string();
-        courses_test::setup_existing_course(true, &mut pool.clone().get().unwrap(), &course);
+        let course = CreateCourseRequest { name: String::from("test_course_four"), ..Default::default() };
+        courses_test::setup_existing_course(true, &mut pool.clone().get().unwrap(), course.clone().into());
 
         let app = test::init_service(
             App::new()
@@ -160,27 +161,27 @@ pub mod tests {
 
         let req = test::TestRequest::post()
             .uri("/students-courses")
-            .set_json(CreateStudentCourseRequest { student_email: request.email.clone(), course_name: course.clone() })
+            .set_json(CreateStudentCourseRequest { student_email: request.email.clone(), course_name: course.name.clone() })
             .to_request();
         let resp = test::call_service(&app, req).await;
         assert!(resp.status().is_success());
 
         let req = test::TestRequest::post()
             .uri("/students-courses")
-            .set_json(CreateStudentCourseRequest { student_email: request.email.clone(), course_name: course.clone() })
+            .set_json(CreateStudentCourseRequest { student_email: request.email.clone(), course_name: course.name.clone() })
             .to_request();
         let resp = test::call_service(&app, req).await;
         assert!(resp.status().is_client_error());
 
         let req = test::TestRequest::delete()
             .uri("/students-courses")
-            .set_json(DeleteStudentCourseRequest { student_email: request.email.clone(), course_name: course.clone() })
+            .set_json(DeleteStudentCourseRequest { student_email: request.email.clone(), course_name: course.name.clone() })
             .to_request();
         let resp = test::call_service(&app, req).await;
         assert!(resp.status().is_success());
 
         students_tests::cleanup(&mut pool.clone().get().unwrap(), &request.email);
-        courses_test::cleanup(&mut pool.clone().get().unwrap(), &course);
+        courses_test::cleanup(&mut pool.clone().get().unwrap(), &course.name);
     }
 
     #[actix_web::test]
@@ -188,8 +189,8 @@ pub mod tests {
         let pool = initialize_db_pool();
         let request = CreateStudentRequest { email: String::from("test_student_five@gmail.com"), ..Default::default() };
         students_tests::setup_existing_student(true, &mut pool.clone().get().unwrap(), request.clone().into());
-        let course = "test_course_five".to_string();
-        courses_test::setup_existing_course(true, &mut pool.clone().get().unwrap(), &course);
+        let course = CreateCourseRequest { name: String::from("test_course_five"), ..Default::default() };
+        courses_test::setup_existing_course(true, &mut pool.clone().get().unwrap(), course.clone().into());
 
         let app = test::init_service(
             App::new()
@@ -199,7 +200,7 @@ pub mod tests {
 
         let req = test::TestRequest::post()
             .uri("/students-courses")
-            .set_json(CreateStudentCourseRequest { student_email: request.email.clone(), course_name: course.clone() })
+            .set_json(CreateStudentCourseRequest { student_email: request.email.clone(), course_name: course.name.clone() })
             .to_request();
         let resp = test::call_service(&app, req).await;
         assert!(resp.status().is_success());
@@ -212,13 +213,13 @@ pub mod tests {
 
         let req = test::TestRequest::delete()
             .uri("/students-courses")
-            .set_json(DeleteStudentCourseRequest { student_email: request.email.clone(), course_name: course.clone() })
+            .set_json(DeleteStudentCourseRequest { student_email: request.email.clone(), course_name: course.name.clone() })
             .to_request();
         let resp = test::call_service(&app, req).await;
         assert!(resp.status().is_success());
 
         students_tests::cleanup(&mut pool.clone().get().unwrap(), &request.email);
-        courses_test::cleanup(&mut pool.clone().get().unwrap(), &course);
+        courses_test::cleanup(&mut pool.clone().get().unwrap(), &course.name);
     }
 
     #[actix_web::test]
@@ -226,8 +227,8 @@ pub mod tests {
         let pool = initialize_db_pool();
         let request = CreateStudentRequest { email: String::from("test_student_six@gmail.com"), ..Default::default() };
         students_tests::setup_existing_student(true, &mut pool.clone().get().unwrap(), request.clone().into());
-        let course = "test_course_six".to_string();
-        courses_test::setup_existing_course(true, &mut pool.clone().get().unwrap(), &course);
+        let course = CreateCourseRequest { name: String::from("test_course_six"), ..Default::default() };
+        courses_test::setup_existing_course(true, &mut pool.clone().get().unwrap(), course.clone().into());
 
         let app = test::init_service(
             App::new()
@@ -242,7 +243,7 @@ pub mod tests {
         assert!(resp.status().is_success());
 
         students_tests::cleanup(&mut pool.clone().get().unwrap(), &request.email);
-        courses_test::cleanup(&mut pool.clone().get().unwrap(), &course);
+        courses_test::cleanup(&mut pool.clone().get().unwrap(), &course.name);
     }
 
     #[actix_web::test]
@@ -250,8 +251,8 @@ pub mod tests {
         let pool = initialize_db_pool();
         let request = CreateStudentRequest { email: String::from("test_student_seven@gmail.com"), ..Default::default() };
         students_tests::setup_existing_student(true, &mut pool.clone().get().unwrap(), request.clone().into());
-        let course = "test_course_seven".to_string();
-        courses_test::setup_existing_course(true, &mut pool.clone().get().unwrap(), &course);
+        let course = CreateCourseRequest { name: String::from("test_course_seven"), ..Default::default() };
+        courses_test::setup_existing_course(true, &mut pool.clone().get().unwrap(), course.clone().into());
 
         let app = test::init_service(
             App::new()
@@ -261,26 +262,26 @@ pub mod tests {
 
         let req = test::TestRequest::post()
             .uri("/students-courses")
-            .set_json(CreateStudentCourseRequest { student_email: request.email.clone(), course_name: course.clone() })
+            .set_json(CreateStudentCourseRequest { student_email: request.email.clone(), course_name: course.name.clone() })
             .to_request();
         let resp = test::call_service(&app, req).await;
         assert!(resp.status().is_success());
 
         let req = test::TestRequest::get()
-            .uri(&format!("/students-courses/course?course_name={}", course))
+            .uri(&format!("/students-courses/course?course_name={}", &course.name))
             .to_request();
         let resp = test::call_service(&app, req).await;
         assert!(resp.status().is_success());
 
         let req = test::TestRequest::delete()
             .uri("/students-courses")
-            .set_json(DeleteStudentCourseRequest { student_email: request.email.clone(), course_name: course.clone() })
+            .set_json(DeleteStudentCourseRequest { student_email: request.email.clone(), course_name: course.name.clone() })
             .to_request();
         let resp = test::call_service(&app, req).await;
         assert!(resp.status().is_success());
 
         students_tests::cleanup(&mut pool.clone().get().unwrap(), &request.email);
-        courses_test::cleanup(&mut pool.clone().get().unwrap(), &course);
+        courses_test::cleanup(&mut pool.clone().get().unwrap(), &course.name);
     }
 
     #[actix_web::test]
@@ -288,8 +289,8 @@ pub mod tests {
         let pool = initialize_db_pool();
         let request = CreateStudentRequest { email: String::from("test_student_eight@gmail.com"), ..Default::default() };
         students_tests::setup_existing_student(true, &mut pool.clone().get().unwrap(), request.clone().into());
-        let course = "test_course_eight".to_string();
-        courses_test::setup_existing_course(true, &mut pool.clone().get().unwrap(), &course);
+        let course = CreateCourseRequest { name: String::from("test_course_eight"), ..Default::default() };
+        courses_test::setup_existing_course(true, &mut pool.clone().get().unwrap(), course.clone().into());
 
         let app = test::init_service(
             App::new()
@@ -298,12 +299,12 @@ pub mod tests {
         ).await;
 
         let req = test::TestRequest::get()
-            .uri(&format!("/students-courses/course?course_name={}", course))
+            .uri(&format!("/students-courses/course?course_name={}", &course.name))
             .to_request();
         let resp = test::call_service(&app, req).await;
         assert!(resp.status().is_success());
 
         students_tests::cleanup(&mut pool.clone().get().unwrap(), &request.email);
-        courses_test::cleanup(&mut pool.clone().get().unwrap(), &course);
+        courses_test::cleanup(&mut pool.clone().get().unwrap(), &course.name);
     }
 }
