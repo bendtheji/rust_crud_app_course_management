@@ -23,7 +23,7 @@ async fn get_course(data: web::Data<db::DbPool>, params: web::Query<GetCourseReq
 #[post("")]
 async fn create_course(data: web::Data<db::DbPool>, req: web::Json<CreateCourseRequest>) -> Result<impl Responder, ApiError> {
     let mut connection = data.get().unwrap();
-    let course = db_functions::create_course(&mut connection, req.0.into())?;
+    let course = db_functions::create_course(&mut connection, NewCourse::from(req.0))?;
     Ok(CourseResponse::from(course))
 }
 
