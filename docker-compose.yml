@@ -7,7 +7,7 @@ services:
     environment:
       POSTGRES_USER: postgres_user
       POSTGRES_PASSWORD: postgres_pw
-      POSTGRES_DB: course_management_minden_ai
+      POSTGRES_DB: rust_crud_app_course_management
     ports:
       - "5432:5432"
     volumes:
@@ -19,7 +19,7 @@ services:
     depends_on:
       - postgres
     environment:
-      DATABASE_URL: postgres://postgres_user:postgres_pw@postgres/course_management_minden_ai
+      DATABASE_URL: postgres://postgres_user:postgres_pw@postgres/rust_crud_app_course_management
       APP_ENV: DOCKER
     ports:
       - "8080:8080"

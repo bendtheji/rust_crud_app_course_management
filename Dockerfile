@@ -31,10 +31,10 @@ RUN apt-get update && \
 WORKDIR /usr/src/app
 
 # Copy the built executable from the previous stage
-COPY --from=builder /usr/src/app/target/release/course_management_minden_ai .
+COPY --from=builder /usr/src/app/target/release/rust_crud_app_course_management .
 
 # Expose the port your Actix Web application listens on
 EXPOSE 8080
 
 # Command to run the application
-CMD ["./course_management_minden_ai"]
+CMD ["./rust_crud_app_course_management"]

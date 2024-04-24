@@ -1,5 +1,5 @@
 [package]
-name = "course_management_minden_ai"
+name = "rust_crud_app_course_management"
 version = "0.1.0"
 edition = "2021"
 

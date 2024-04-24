@@ -398,22 +398,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "06ea2b9bc92be3c2baa9334a323ebca2d6f074ff852cd1d7b11064035cd3868f"
 
 [[package]]
-name = "course_management_minden_ai"
-version = "0.1.0"
-dependencies = [
- "actix-web",
- "chrono",
- "derive_more",
- "diesel",
- "diesel_migrations",
- "dotenvy",
- "regex",
- "serde",
- "serde_json",
- "thiserror",
-]
-
-[[package]]
 name = "cpufeatures"
 version = "0.2.12"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1037,6 +1021,22 @@ name = "regex-syntax"
 version = "0.8.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "c08c74e62047bb2de4ff487b251e4a92e24f48745648451635cec7d591162d9f"
+
+[[package]]
+name = "rust_crud_app_course_management"
+version = "0.1.0"
+dependencies = [
+ "actix-web",
+ "chrono",
+ "derive_more",
+ "diesel",
+ "diesel_migrations",
+ "dotenvy",
+ "regex",
+ "serde",
+ "serde_json",
+ "thiserror",
+]
 
 [[package]]
 name = "rustc-demangle"

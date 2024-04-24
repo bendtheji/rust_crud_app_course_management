@@ -54,7 +54,7 @@ The APIs endpoints for fulfilling the uses cases stated in the assignment descri
 
 
 ### Postman
-Import the "Course Management Minden AI.postman_collection.json" file into Postman to get the list of available endpoints.
+Import the "Rust CRUD App Course Management.postman_collection.json" file into Postman to get the list of available endpoints.
 
 
 ### Students
@@ -66,12 +66,12 @@ Query Params:
 
 Response Body:
 ```
-{ "id": 1, "email": "taylor.swift@gmail.com"}
+{ "id": 1, "email": "hank.hill@gmail.com"}
 ```
 
 Example:
 ```
-curl GET 'http://127.0.0.1:8080/students?email=taylor.swift@gmail.com'
+curl GET 'http://127.0.0.1:8080/students?email=hank.hill@gmail.com'
 ```
 
 
@@ -79,16 +79,16 @@ curl GET 'http://127.0.0.1:8080/students?email=taylor.swift@gmail.com'
 
 Request Body:
 ```
-{ "email": "taylor.swift@gmail.com" }
+{ "email": "hank.hill@gmail.com" }
 ```
 Response Body:
 ```
-{ "id": 1, "email": "taylor.swift@gmail.com"}
+{ "id": 1, "email": "hank.hill@gmail.com"}
 ```
 
 Example:
 ```
-curl POST -H 'Content-Type: application/json' -d '{"email": "taylor.swift@gmail.com"}' http://127.0.0.1:8080/students
+curl POST -H 'Content-Type: application/json' -d '{"email": "hank.hill@gmail.com"}' http://127.0.0.1:8080/students
 ```
 
 ### Courses
@@ -137,7 +137,7 @@ Response Body:
 
 Example:
 ```
-curl GET 'http://127.0.0.1:8080/students-courses/student?student_email=taylor.swift@gmail.com'
+curl GET 'http://127.0.0.1:8080/students-courses/student?student_email=hank.hill@gmail.com'
 ```
 
 `GET /students-courses/course`
@@ -147,7 +147,7 @@ Query Params:
 
 Response Body:
 ```
-["taylor.swift@gmail.com", "kanye.west@gmail.com"]
+["hank.hill@gmail.com", "bobby.hill@gmail.com"]
 ```
 
 Example:
@@ -159,7 +159,7 @@ curl GET 'http://127.0.0.1:8080/students-courses/course?course_name=physics'
 
 Request Body:
 ```
-{ "student_email": "kanye.west@gmail.com", "course_name": "physics" }
+{ "student_email": "bobby.hill@gmail.com", "course_name": "physics" }
 ```
 Response Body:
 ```
@@ -168,14 +168,14 @@ Response Body:
 
 Example:
 ```
-curl POST -H 'Content-Type: application/json' -d '{"student_email": "kanye.west@gmail.com", "course_name": "physics"}' http://127.0.0.1:8080/students-courses
+curl POST -H 'Content-Type: application/json' -d '{"student_email": "bobby.hill@gmail.com", "course_name": "physics"}' http://127.0.0.1:8080/students-courses
 ```
 
 `DELETE /students-courses`
 
 Request Body:
 ```
-{ "student_email": "kanye.west@gmail.com", "course_name": "physics" }
+{ "student_email": "bobby.hill@gmail.com", "course_name": "physics" }
 ```
 Response Body:
 ```
@@ -184,7 +184,7 @@ Response Body:
 
 Example:
 ```
-curl DELETE -H 'Content-Type: application/json' -d '{"student_email": "kanye.west@gmail.com", "course_name": "physics"}' http://127.0.0.1:8080/students-courses
+curl DELETE -H 'Content-Type: application/json' -d '{"student_email": "bobby.hill@gmail.com", "course_name": "physics"}' http://127.0.0.1:8080/students-courses
 ```
 
 ## Tests
